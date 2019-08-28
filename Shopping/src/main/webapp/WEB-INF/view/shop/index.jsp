@@ -60,10 +60,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body>
 <script>
+	var isReturn = ${requestScope.adsList};
+	if(isReturn==null || isReturn=="" || isReturn==undefined){
+		location.href="${pageContext.request.contextPath }/goodstype/findAll";
+	}
     $(function(){
         $('.nav ul li').hover(function(){
             $(this).children(".details").show();
-        },function(){
+        },function(){ 
             $(this).children(".details").hide();
         });
         $('#my').hover(function(){

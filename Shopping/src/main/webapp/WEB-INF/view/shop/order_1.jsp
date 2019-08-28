@@ -252,6 +252,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <p style="width: 900px;">
             商品：${requestScope.goods.goodsName}等
             </p>
+            <input type="hidden" name="goodsId" value="${requestScope.goods.goodsId}"/>
             <input type="hidden" name="ordersId" value="${requestScope.order.orderId}"/>
             <p>收货信息：${requestScope.order.orderAddress}，${requestScope.order.orderName}
                                       手机：${requestScope.order.orderPhone}</p>

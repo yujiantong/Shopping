@@ -55,7 +55,7 @@ public class GoodsBackController {
 	@RequestMapping(value="updateGoods",method={RequestMethod.GET,RequestMethod.POST})
 	public String updateGoods(Model model,HttpServletRequest request,Integer goodsId,Goods good,@RequestParam("myimg") MultipartFile file){
 		System.out.println(good.getGoodsName()+"测试-------");
-		String path=request.getServletContext().getRealPath("/resources/upfile");
+		String path=request.getServletContext().getRealPath("/resources/upImgs");
 		 try {
 				file.transferTo(new File(path+"/"+file.getOriginalFilename()));
 			} catch (IllegalStateException e) {
@@ -68,7 +68,7 @@ public class GoodsBackController {
 		    model.addAttribute("goods", goods);    
 		 
 			good.setGoodsImg(file.getOriginalFilename());
-		    goodsService.updateGoods(good);
+		    //goodsService.updateGoods(good);
 		return "manager/editGoods";
 	}
 	/**

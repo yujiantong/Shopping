@@ -20,7 +20,8 @@ public class OrderPayAction {
 	//银行代码
 
 	@RequestMapping("payOrder")
-	public String payOrder(HttpSession session,  HttpServletRequest request,StringBuffer s,String ordersId,String pd_FrpId){
+	public String payOrder(HttpSession session,  HttpServletRequest request,StringBuffer s,String ordersId,String pd_FrpId,
+			String goodsId){
 		Users loginUsers=(Users) session.getAttribute("loginUsers");
 		System.out.println(pd_FrpId+"*******************"+ordersId);
 		// 付款需要的参数:
@@ -29,7 +30,7 @@ public class OrderPayAction {
 		// 测试商户：密钥
 		String keyValue = "69cl522AV6q613Ii4W6u8K6XuW8vM1N6bFgyv769220IuYe9u37N4y7rI4Pl";
 		// 测试商户：商户接收支付成功数据的地址，这个是要手工改的，支付成功后的处理action
-		String p8_Url = "http://192.168.9.121:8505/Shopping/OrderPayCollbackAction/orderpaycallback";
+		String p8_Url = "http://172.20.177.105:8080/Shopping/OrderPayCollbackAction/orderpaycallback";
 		// 获取订单号
 		//测试先随机生成
 		//ordersId=UUID.randomUUID().toString().replace("-", "");
@@ -41,7 +42,7 @@ public class OrderPayAction {
 		String p4_Cur = "CNY"; // 交易币种。CNY为人民币
 		String p7_Pdesc = ""; // 商品描述
 		String p6_Pcat = ""; // 商品种类
-		String p5_Pid = loginUsers.getUserName(); // 商品ID
+		String p5_Pid = goodsId; // 商品ID
 		String p9_SAF = "0"; // 送货地址。0为不需要，1为需要
 		String pa_MP = loginUsers.getUserId().toString(); // 商户扩展信息
 		String pr_NeedResponse = "0"; // 应答机制
