@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.DiscussImgMapper">
+	<resultMap type="com.web.entity.DiscussImg" id="baseResultDiscussImg">
+		<id property="discussImgId" column="discussimg_id" javaType="java.lang.Integer"/>
+		<result property="discussImgPath" column="discussimg_path" javaType="java.lang.String"/>
+		<result property="discussImgdis.discussId" column="discussimg_discuss" javaType="java.lang.Integer"/>
+	</resultMap>
+	
+	<sql id="baseColumn">
+		discussimg_id,discussimg_discuss,discussimg_path
+	</sql>
+	
+	<insert id="saveDiscussImg" parameterType="com.web.entity.DiscussImg">
+		insert into discussimg(discussimg_discuss,discussimg_path)
+		values
+		(#{discussImgdis.discussId},#{discussImgPath})
+	</insert>
+	
+	<select id="findAll" resultMap="baseResultDiscussImg">
+		select <include refid="baseColumn"/> from discussimg
+	</select>
+</mapper>

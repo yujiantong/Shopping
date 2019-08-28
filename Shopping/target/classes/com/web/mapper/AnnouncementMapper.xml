@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.AnnouncementMapper" >
+  <resultMap id="BaseResultMap" type="com.web.entity.Announcement" >
+    <id column="announcement_Id" property="announcementId" jdbcType="INTEGER" />
+    <result column="announcement_type" property="announcementType" jdbcType="VARCHAR" />
+    <result column="announcement_Name" property="announcementName" jdbcType="VARCHAR" />
+    <result column="announcement_Path" property="announcementPath" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    announcement_Id, announcement_type, announcement_Name, announcement_Path
+  </sql>
+  <select id="findAllAnnouncement" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from announcement
+  </select>
+ 
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.OrdersMapper" >
+<insert id="saveOrders" parameterType="com.web.entity.Orders" useGeneratedKeys="true" keyProperty="orderId">
+	INSERT INTO orders (order_id, order_user, order_address, order_phone, order_name, order_date,order_AllPrice,order_Coupon) 
+	VALUES (#{orderId},#{orderUser.userId},#{orderAddress},#{orderPhone},#{orderName},#{orderDate},#{orderAllPrice},#{orderCoupon.couponId})
+</insert>
+<select id="findOrdersById" parameterType="string" resultMap="baseResultOrders">
+	SELECT * from orders WHERE order_id=#{orderId}
+</select>
+<select id="findOrdersByUserId" parameterType="int" resultMap="baseResultOrders">
+    SELECT * from orders WHERE order_user=#{orderUser.userId} order by order_date desc
+</select>
+<!-- 孙 根据订单状态查找订单 -->
+<select id="findOrdersByStatu" resultMap="baseResultOrders" parameterType="java.lang.Integer">
+	select * from orders LEFT JOIN logistics ON order_id=logistics_order
+	where 
+	logistics_statu=#{statuId}
+</select>
+
+<select id="findAllOrder" resultMap="baseResultOrders">
+	select * from orders 
+</select>
+<select id="findByParentType" resultMap="baseResultOrders" parameterType="java.lang.String">
+	select * from orders LEFT JOIN orderdetails on orders.order_id=orderdetails.datail_Order
+	LEFT JOIN goods on orderdetails.detail_Goods=goods.goods_Id 
+	LEFT JOIN goodstype on goods.goods_Type=goodstype.type_Id
+	where type_Path LIKE #{typeId} 
+</select>
+<resultMap type="com.web.entity.Orders" id="baseResultOrders">
+	<result property="orderId" column="order_id" javaType="string"/>
+	<result property="orderUser.userId" column="order_user" javaType="int"/>
+	<result property="orderAddress" column="order_address" javaType="string"/>
+	<result property="orderPhone" column="order_phone" javaType="string"/>
+	<result property="orderName" column="order_name" javaType="string"/>
+	<result property="orderAllPrice" column="order_AllPrice" javaType="java.lang.Double"/>
+	<result property="orderDate" column="order_date" javaType="java.util.Date"/>
+	<result property="orderCoupon.couponId" column="order_Coupon" javaType="int"/>
+	<result property="orderAllPrice" column="order_AllPrice" javaType="java.lang.Double"/>
+</resultMap>
+
+</mapper>                                                                          

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.ToaddressMapper" >
+ 
+  <sql id="baseToAddressColumn" >
+    address_id, address_desc, address_user,address_name,address_phone,address_state
+  </sql>
+  <select id="findMoRenByUserId" resultMap="baseResultToAddress" parameterType="java.lang.Integer">
+  	SELECT <include refid="baseToAddressColumn"/> FROM toaddress WHERE address_user=#{userId} AND address_state=1
+  </select>
+  <select id="findAllToAddress" resultMap="baseResultToAddress">
+  	select <include refid="baseToAddressColumn"/> from toAddress
+  </select>
+  
+  <select id="findByAddressId" resultMap="baseResultToAddress" parameterType="java.lang.Integer">
+  	SELECT * FROM toaddress WHERE address_id=#{addressId}
+  </select>
+  <select id="findByUserId" resultMap="baseResultToAddress">
+  	select <include refid="baseToAddressColumn"/> from toaddress WHERE address_user=#{userId}
+  </select>
+  
+  <delete id="delToAddress" parameterType="java.lang.Integer">
+  	delete from toAddress where address_id=#{addressId}
+  </delete>
+  
+  <update id="updateToAddress" parameterType="com.web.entity.Toaddress">
+  	update toaddress
+  	<set>
+  		<if test="addressDesc!=null">address_desc=#{addressDesc} ,</if>
+  		<if test="addressUser!=null and addressUser.userId!=null">address_user=#{addressUser.userId} ,</if>
+  	    <if test="addressName!=null">address_name=#{addressName},</if>
+  	    <if test="addressPhone!=null">address_phone=#{addressPhone},</if>
+  	    <if test="addressState!=null">address_state=#{addressState}</if>
+  	</set>
+  	where 
+  	address_Id=#{addressId}
+  </update>
+  <insert id="saveToAddress" parameterType="com.web.entity.Toaddress">
+  	insert into toAddress(address_desc,address_user,address_name,address_phone,address_state)
+  	values
+  	(#{addressDesc},#{addressUser.userId},#{addressName},#{addressPhone},#{addressState})
+  </insert>
+  
+  
+   <resultMap id="baseResultToAddress" type="com.web.entity.Toaddress" >
+    <id column="address_id" property="addressId" jdbcType="INTEGER" />
+    <result column="address_desc" property="addressDesc" jdbcType="VARCHAR" />
+    <result column="address_user" property="addressUser.userId" jdbcType="INTEGER" />
+  	<result column="address_name" property="addressName" jdbcType="VARCHAR"/>
+  	<result column="address_phone" property="addressPhone" jdbcType="VARCHAR"/>
+  	<result column="address_state" property="addressState" jdbcType="INTEGER"/>
+  </resultMap>
+</mapper>

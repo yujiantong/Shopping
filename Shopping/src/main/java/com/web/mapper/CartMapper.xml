@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.CartMapper" >
+<select id="findCartByCartId" parameterType="int" resultMap="baseResultCart">
+	SELECT * from cart WHERE cart_Id=#{cartId}
+</select>
+<delete id="deleteCartByCartId" parameterType="int">
+	DELETE FROM cart WHERE cart_Id=#{cartId}
+</delete>
+<select id="findCartByUserId" parameterType="int" resultMap="baseResultCart">
+	SELECT * from cart WHERE cart_User=#{cartUser.userId}
+</select>
+<insert id="saveCart" parameterType="com.web.entity.Cart" keyProperty="cartId" useGeneratedKeys="true">
+	INSERT INTO cart (cart_Goods, cart_Num, cart_Price, cart_User) VALUES (#{cartGoods.goodsId},#{cartNum},#{cartPrice},#{cartUser.userId})
+</insert>
+<update id="updateCart" parameterType="com.web.entity.Cart">
+	UPDATE  cart  
+	  	<set>
+	  	  <if test="cartGoods.goodsId!=null">cart_Goods=#{cartGoods.goodsId}, </if>
+	  	  <if test="cartNum!=null"> cart_Num =#{cartNum}, </if>
+	  	  <if test="cartPrice!=null"> cart_Price =#{cartPrice},  </if>
+	  	  <if test="cartUser.userId!=null"> cart_User =#{cartUser.userId}</if>
+	  	</set> 
+	  	WHERE
+	   (cart_Id =#{cartId})
+
+</update>
+<resultMap type="com.web.entity.Cart" id="baseResultCart" >
+	<result property="cartId" column="cart_Id" javaType="int"/>
+	<result property="cartGoods.goodsId" column="cart_Goods" javaType="int"/>
+	<result property="cartNum" column="cart_Num" javaType="int"/>
+	<result property="cartPrice" column="cart_Price" javaType="java.lang.Double"/>
+	<result property="cartUser.userId" column="cart_User" javaType="int"/>
+</resultMap>
+</mapper>

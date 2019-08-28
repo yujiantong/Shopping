@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.OrderDetailMapper" >
+<insert id="saveDetail" parameterType="com.web.entity.OrderDetail">
+	INSERT INTO orderdetails (datail_Order, detail_Goods, detail_Price, detail_Num) 
+	VALUES(#{detailOrder.orderId},#{detailGoods.goodsId},#{detailPrice},#{detailNum})
+</insert>
+<select id="findDetailById" parameterType="int" resultMap="baseResultOrderDetail">
+	SELECT * from orderdetails WHERE orderdetails.detail_Id=#{detailId}
+</select>
+<select id="findDetailByOrderId" parameterType="string" resultMap="baseResultOrderDetail">
+	SELECT * from orderdetails WHERE orderdetails.datail_Order=#{detailOrder.orderId}
+</select>
+
+<resultMap type="com.web.entity.OrderDetail" id="baseResultOrderDetail">
+	<result property="detailId" column="detail_Id" javaType="int"/>
+	<result property="detailOrder.orderId" column="datail_Order" javaType="string"/>
+	<result property="detailGoods.goodsId" column="detail_Goods" javaType="int"/>
+	<result property="detailPrice" column="detail_Price" javaType="java.lang.Double"/>
+	<result property="detailNum" column="detail_Num" javaType="int"/>
+</resultMap>
+
+</mapper>

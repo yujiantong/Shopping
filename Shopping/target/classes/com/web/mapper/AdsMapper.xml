@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.AdsMapper" >
+  <resultMap id="BaseResultAds" type="com.web.entity.Ads" >
+    <id column="ads_id" property="adsId" jdbcType="INTEGER" />
+    <result column="ads_desc" property="adsDesc" jdbcType="VARCHAR" />
+    <result column="ads_begaintime" property="adsBegaintime" jdbcType="DATE" />
+    <result column="ads_endtime" property="adsEndtime" jdbcType="DATE" />
+    <result column="ads_path" property="adsPath" jdbcType="VARCHAR" />
+    <result column="ads_img" property="adsImg" jdbcType="VARCHAR" />
+    
+    <result column="ads_type" property="adsType" jdbcType="VARCHAR" />
+    <result column="ads_size" property="adsSize" jdbcType="VARCHAR" />
+    <result column="ads_state" property="adsState.statuId" jdbcType="INTEGER" />
+  </resultMap>
+ <!--  查找Id -->
+  <select id="findByAdsId" resultMap="resultAdsJoinState">
+	   select * from ads left join status on ads.ads_state=status.statu_Id
+	   where ads.ads_Id=#{0}
+	</select>
+  
+  
+  <!-- 广告停用，启用 -->
+  <update id="updateAdsState" parameterType="com.web.entity.Ads">
+      update Ads set ads_State=#{0} where ads_Id=#{1}
+  </update>
+  <!-- 删除广告 这里只修改状态 -->
+  <update id="delete" parameterType="com.web.entity.Ads">
+      update Ads set ads_State=13 where ads_Id=#{0}
+  </update>
+  <!-- 批量删除广告 这里只修改状态 -->
+  <update id="deleteAllAds" parameterType="com.web.entity.Ads">
+      update Ads set ads_State=13 where ads_Id=#{adsId}
+  </update>
+  
+  <sql id="baseColumnAds" >
+    ads_id, ads_desc, ads_begaintime, ads_endtime, ads_path, ads_img
+  </sql>
+  <!-- 查询所有广告 -->
+  <select id="findAllAds" resultMap="resultAdsJoinState">
+  	select * from ads,status where ads.ads_state=status.statu_Id 
+  	and ads.ads_state!=13 and ads.ads_state!=4
+  	order by ads_Id asc
+  </select>
+  <resultMap type="com.web.entity.Ads" id="resultAdsJoinState" extends="BaseResultAds">
+      <!-- 查询广告状态 -->
+     <association property="adsState" 
+	   resultMap="com.web.mapper.StatusMapper.BaseResultStatus"/>
+  </resultMap>
+  
+  
+ <update id="updateAds" parameterType="com.web.entity.Ads">
+  	update ads
+  	<set>
+  		<if test="adsDesc!=null"> ads_desc=#{adsDesc},</if>
+  		<if test="adsBegaintime!=null"> ads_begaintime=#{adsBegaintime},</if>
+  		<if test="adsEndtime!=null"> ads_endtime=#{adsEndtime},</if>
+  		<if test="adsPath!=null"> ads_path=#{adsPath},</if>
+  		<if test="adsImg!=null"> ads_img=#{adsImg}</if>
+  	</set>
+  	where 
+  	ads_id=#{adsId}
+  </update>
+   <delete id="delAds" parameterType="java.lang.Integer">
+	  delete from ads 
+	  where
+	  ads_id=#{adsId}
+  </delete> 
+  <insert id="saveAds" parameterType="com.web.entity.Ads" useGeneratedKeys="true" keyProperty="adsId">
+  	insert into ads(ads_begaintime,ads_path,ads_img,ads_type,ads_size,ads_state)
+  	   values
+  	(#{adsBegaintime},#{adsPath},#{adsImg},#{adsType},#{adsSize},${adsState.statuId})
+  </insert> 
+</mapper>

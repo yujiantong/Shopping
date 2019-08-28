@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.AdminsMapper">
+
+<select id="findAdminId" parameterType="int" resultMap="AdminJoinRole">
+  	select * from admins left join roles on admins.admin_role=roles.role_id where admin_id = #{0}
+  </select>
+
+	<select id="findAllAdminInformation" resultMap="AdminJoinRole">
+		SELECT * from admins LEFT JOIN roles ON admins.admin_Role=roles.role_id
+	</select>
+	
+	<resultMap type="com.web.entity.Admins" id="AdminJoinRole" extends="BaseResultAdmins">
+		<association property="adminRole" 
+		select="com.web.mapper.RolesMapper.findByRoleId" 
+		column="admin_Role" javaType="com.web.entity.Roles"></association>
+	</resultMap>
+
+	<sql id="adminColumn">
+		admin_Id, admin_Name, admin_Pass, admin_Role
+	</sql>
+	
+	<insert id="saveAdmins" parameterType="com.web.entity.Admins" useGeneratedKeys="true" keyProperty="adminId">
+		insert into admins (admin_Name, admin_Pass, admin_Role) 
+		values (#{adminName}, #{adminPass}, #{adminRole.roleId})
+	</insert>
+	
+	<delete id="deleteAdminsByAdminId" parameterType="java.lang.Integer">
+		delete from admins where admin_Id = #{adminId}
+	</delete>
+	
+	<update id="updateAdmins" parameterType="com.web.entity.Admins" >
+		update admins 
+			<set>
+				<if test="adminName != null">admin_Name = #{adminName},</if>
+				<if test="adminPass != null">admin_Pass = #{adminPass},</if>
+				<if test="adminRole != null and adminRole.roleId != null">admin_Role = #{adminRole.roleId}</if>
+			</set>
+		where admin_Id = #{adminId}
+	</update>
+	
+	<select id="findAllAdmin" resultMap="BaseResultAdmins" parameterType="java.lang.String">
+		select <include refid="adminColumn"/> from admins
+	</select>
+		<select id="findByName" resultMap="BaseResultAdmins">
+		select <include refid="adminColumn"/> from admins
+		where
+		admin_name=#{adminName}
+	</select>
+	
+	<resultMap id="BaseResultAdmins" type="com.web.entity.Admins">
+		<id column="admin_Id" property="adminId" jdbcType="INTEGER" />
+		<result column="admin_Name" property="adminName" jdbcType="VARCHAR" />
+		<result column="admin_Pass" property="adminPass" jdbcType="VARCHAR" />
+		<result column="admin_Role" property="adminRole.roleId" jdbcType="VARCHAR" />
+	</resultMap>
+</mapper>

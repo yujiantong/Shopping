@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.GoodsMapper" >
+  <resultMap id="baseResultGoods" type="com.web.entity.Goods" >
+    <id column="goods_Id" property="goodsId" jdbcType="INTEGER" />
+    <result column="goods_Name" property="goodsName" jdbcType="VARCHAR" />
+    <result column="goods_Price" property="goodsPrice" jdbcType="DOUBLE" />
+    <result column="goods_Num" property="goodsNum" jdbcType="INTEGER" />
+    <result column="goods_type" property="goodsType.typeId" jdbcType="INTEGER" />
+    <result column="goods_img" property="goodsImg" jdbcType="VARCHAR" />
+    <result column="goods_Date" property="goodsDate" jdbcType="DATE" />
+    <result column="goods_FromAddress" property="goodsFromaddress" jdbcType="VARCHAR" />
+    <result column="goods_Remark" property="goodsRemark" jdbcType="VARCHAR" />
+    <result column="goods_Standard" property="goodsStandard" jdbcType="INTEGER" />
+    <result column="goods_State" property="goodsState.statuId" jdbcType="INTEGER" />
+    <result column="goods_WarnNum" property="goodsWarnnum" jdbcType="INTEGER" />
+    <result column="goods_Detail" property="goodsDetail" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   
+  <!-- 新品推荐 -->
+   <select id="findnewGoods" resultMap="resultGoodsJoinType">
+     select * from goods left join goodstype on 
+     goods.goods_Type=goodstype.type_Id order by goods_Id desc LIMIT 0,6
+   </select>
+   <!-- 热门唇妆 -->
+   <select id="findnewGoods_ReLip" resultMap="resultGoodsJoinType">
+     select * from goods left join goodstype on 
+     goods.goods_Type=goodstype.type_Id WHERE goods.goods_Type=24 order by goods_Id desc LIMIT 0,4
+   </select>
+    <!-- 休闲零食 -->
+    <select id="findnewGoods_Arder" resultMap="resultGoodsJoinType">
+     select * from goods left join goodstype on 
+     goods.goods_Type=goodstype.type_Id WHERE goods.goods_Type=41 order by goods_Id desc LIMIT 0,4
+   </select>
+    
+  <!--商品详情查询 -->
+  <select id="goodsDetail" parameterType="int" resultMap="baseGoodsjoinImgs">
+     select * from goods where goods_Id=#{goodsId}
+  </select>
+  <resultMap id="baseGoodsjoinImgs" extends="baseResultGoods" type="com.web.entity.Goods">
+     <collection property="imgsList"
+		javaType="java.util.ArrayList"
+		select="com.web.mapper.ImgsMapper.findByGoodsId"
+		column="goods_Id"></collection>
+	</resultMap>
+  
+  
+  <resultMap type="com.web.entity.Goods" id="resultGoodsJoinType" extends="baseResultGoods">
+      <!-- 查询商品带类型 -->
+     <association property="goodsType" 
+	   resultMap="com.web.mapper.GoodstypeMapper.baseResultGoodsType"/>
+  </resultMap>
+  <resultMap type="com.web.entity.Goods" id="resultGoodsJoinState" extends="resultGoodsJoinType">
+      <!-- 查询商品状态 -->
+     <association property="goodsState" 
+	   resultMap="com.web.mapper.StatusMapper.BaseResultStatus"/>
+  </resultMap>
+  
+  
+ <resultMap type="com.web.entity.Goods" id="resultGoodsJoinImg" extends="resultGoodsJoinType">
+      <!-- 查询商品带图片  这里type先继承了goods，然后img继承了type，调用只需要调img -->
+     <association property="goodsImg" 
+	   resultMap="com.web.mapper.ImgsMapper.baseResultImg"/>
+  </resultMap>                         
+
+<select id="findByTypeId" resultMap="resultGoodsJoinType">
+	select * from goods left join goodstype on goods.goods_Type=goodstype.type_Id where goods_Type= #{0}
+</select>
+  
+ <!--  后台商品管理查询开始 -->
+  <select id="findAll" resultMap="resultGoodsJoinState" parameterType="com.web.vo.SearchGoodsVO">
+     select * from goods,goodstype,status
+      <where>
+             goods.goods_Type=goodstype.type_Id and
+             goods.goods_State=status.statu_Id and 
+             goods.goods_State!=13 
+         <if test="goodsName!=null and goodsName!=''"> and goods.goods_Name LIKE concat('%',#{goodsName},'%')</if>
+         <if test="goodsDate!=null and goodsDate!=''"> and goods.goods_Date=#{goodsDate}</if>
+              order by goods.goods_Num asc 
+      </where>
+      
+  </select>
+  <!--  后台商品管理查询结束 -->
+  
+  
+  <select id="findById" resultMap="resultGoodsJoinType">
+	   select * from goods left join goodstype on goods.goods_Type=goodstype.type_Id 
+	   where goods_Id=#{0}
+  </select>
+ <!--  后台更新商品信息 -->
+  <update id="updateGoods" parameterType="com.web.entity.Goods">
+		update goods 
+			<set>
+				<if test="goodsName != null">goods_Name = #{goodsName},</if>
+				<if test="goodsState!= null and goodsState.statuId != null">goods_State = #{goodsState.statuId},</if>
+				<if test="goodsPrice != null">goods_Price = #{goodsPrice},</if>
+				<if test="goodsNum != null">goods_Num = #{goodsNum},</if>
+				<if test="goodsImg != null and goodsImg !=''">goods_Img= #{goodsImg},</if>
+				<if test="goodsDate != null">goods_Date= #{goodsDate},</if>
+				<if test="goodsFromaddress != null">goods_Fromaddress = #{goodsFromaddress},</if>
+				<if test="goodsType != null and goodsType.typeId != null">goods_type = #{goodsType.typeId}</if>
+			</set>
+		where goods_Id = #{goodsId}
+	</update>
+  
+	<!-- 根据商品类型查询 孙 -->
+   <select id="findByType" resultMap="baseResultGoods" parameterType="java.lang.Integer">
+	   select * from goods 
+	   where goods_type=#{typeId}
+	</select>
+	<!-- 添加商品 -->
+  <insert id="insert" parameterType="com.web.entity.Goods" useGeneratedKeys="true" keyProperty="goodsId">
+       INSERT INTO goods(goods_Name,goods_price,goods_num,
+       goods_img,goods_date,goods_type,goods_FromAddress,goods_State) VALUES (
+       #{goodsName},#{goodsPrice},#{goodsNum},#{goodsImg},
+       #{goodsDate},#{goodsType.typeId},#{goodsFromaddress},#{goodsState.statuId})
+  </insert>
+  <!-- 商品上下架 -->
+  <update id="updateStatu" parameterType="com.web.entity.Goods">
+      update Goods set goods_State=#{0} where goods_Id=#{1}
+  </update>
+  <!-- 删除商品 这里只修改状态 -->
+  <update id="delete" parameterType="com.web.entity.Goods">
+      update Goods set goods_State=13 where goods_Id=#{0}
+  </update>
+  
+ <!--  批量删除 -->
+  <update id="deleteAll" parameterType="com.web.entity.Goods">
+      update Goods set goods_State=13 where goods_Id=#{goodsId}
+  </update>
+ <!--  前台商品查询 开始    共四块 -->
+  <select id="findAllMuyinGoods" resultMap="resultGoodsJoinType">
+     select * from goods left join goodstype on goods.goods_Type=goodstype.type_Id where goods_Type=2
+  </select>
+  <select id="findAllMeizhuangGoods" resultMap="resultGoodsJoinType">
+     select * from goods left join goodstype on goods.goods_Type=goodstype.type_Id where goods_Type=15
+  </select>
+  <select id="findAllJiajuGoods" resultMap="resultGoodsJoinType">
+     select * from goods left join goodstype on goods.goods_Type=goodstype.type_Id where goods_Type=29
+  </select>
+  <select id="findAllYingyangGoods" resultMap="resultGoodsJoinType">
+     select * from goods left join goodstype on goods.goods_Type=goodstype.type_Id where goods_Type=47
+  </select>
+  <!--  前台商品查询结束-->
+    
+</mapper>

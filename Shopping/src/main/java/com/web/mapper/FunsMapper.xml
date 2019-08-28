@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.FunsMapper">
+
+	<sql id="funsColumn">
+		fun_id, fun_name, fun_url, fun_pid, fun_target
+	</sql>
+	
+	<select id="findByFunsPid" parameterType="java.lang.Integer" resultMap="BaseResultFuns">
+		select <include refid="funsColumn"/> from funs where fun_Pid = #{0}
+	</select>
+	
+	<select id="findByFunsId" parameterType="java.lang.Integer" resultMap="BaseResultFuns">
+		select <include refid="funsColumn"/> from funs where fun_Id = #{funId}
+	</select>
+	
+	<resultMap id="BaseResultFuns" type="com.web.entity.Funs">
+		<id column="fun_id" property="funId" jdbcType="INTEGER" />
+		<result column="fun_name" property="funName" jdbcType="VARCHAR" />
+		<result column="fun_url" property="funUrl" jdbcType="VARCHAR" />
+		<result column="fun_pid" property="funPid.funId" jdbcType="INTEGER" />
+		<result column="fun_target" property="funTarget" jdbcType="VARCHAR" />
+	</resultMap>
+
+</mapper>

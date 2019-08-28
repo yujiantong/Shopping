@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.StatusMapper" >
+  <sql id="baseStatuColumn" >
+    statu_Id, statu_Name
+  </sql>
+  <select id="findAllStatus" resultMap="BaseResultStatus">
+	  select <include refid="baseStatuColumn"/> from status
+  </select>
+  <delete id="delStatus" parameterType="java.lang.Integer">
+ 	  delete from status where statu_Id=#{statuId}
+  </delete>
+  <update id="updateStatus" parameterType="com.web.entity.Status">
+  	  update status
+  	  <set>
+  	  	<if test="statuName!=null">statu_Name=#{statuName} </if>
+  	  </set>
+  	  where 
+  	  statu_id=#{statuId}
+  </update>
+  <insert id="saveStatus" parameterType="com.web.entity.Status">
+  	  insert into status(statu_name)
+  	  values
+  	  (#{statuName})
+  </insert>
+  <select id="findById" resultMap="BaseResultStatus">
+  	 select <include refid="baseStatuColumn"/> from status where statu_Id=#{statuId}
+  </select>
+  
+  <resultMap id="BaseResultStatus" type="com.web.entity.Status" >
+    <id column="statu_Id" property="statuId" jdbcType="INTEGER" />
+    <result column="statu_Name" property="statuName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  
+</mapper>

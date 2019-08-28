@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.LoginlogMapper" >
+
+<select id="findAll" resultMap="LoginlogJoinAdmin">
+	SELECT * from loginlog LEFT JOIN admins on loginlog.loginlog_admin=admins.admin_Id 
+</select>
+
+<resultMap type="com.web.entity.Loginlog" id="LoginlogJoinAdmin" extends="baseResultLoginlog">
+<association property="loginlogAdmin"
+resultMap="com.web.mapper.AdminsMapper.BaseResultAdmins"/>
+</resultMap>
+
+
+<!-- <resultMap type="com.web.entity.Goods" id="resultGoodsJoinType" extends="baseResultGoods">
+      查询商品带类型
+     <association property="goodsType" 
+	   resultMap="com.web.mapper.GoodstypeMapper.baseResultGoodsType"/>
+  </resultMap> -->
+ 
+<select id="findById" resultMap="baseResultLoginlog" parameterType="java.lang.Integer">
+SELECT * from loginlog where loginlog_id=#{loginLogId}
+</select> 
+
+ <insert id="saveLoginlog" parameterType="com.web.entity.Loginlog" useGeneratedKeys="true" keyProperty="loginlogId">
+		INSERT INTO loginlog(loginlog_admin,loginlog_IP,loginlog_address,loginlog_date,loginlog_result,loginlog_resultdesc) 
+		VALUES 
+		(#{loginlogAdmin.adminId},#{loginlogIp},#{loginlogAddress},#{loginlogDate},#{loginlogResult},#{loginlogResultdesc})
+ </insert> 
+
+<!-- <delete id="deleteLoginlogById" parameterType="java.lang.Integer">
+		delete from loginlog where loginlog_id =#{loginlogId}
+</delete> -->
+
+<update id="updateLoginlogById" parameterType="com.web.entity.Loginlog">
+		update loginlog
+		<set>
+		<if test="loginlogAdmin !=null and loginlogAdmin.AdminId !=null">loginlog_admin=#{loginlogAdmin.adminId},</if>
+		<if test="loginlogIp !=null">loginlog_IP=#{loginlogIp},</if>
+		<if test="loginlogAddress !=null">loginlog_address=#{loginlogAddress},</if>
+		<if test="loginlogDate !=null">loginlog_date=#{loginlogDate},</if>
+		<if test="loginlogResult !=null">loginlog_result=#{loginlogResult},</if>
+		<if test="loginlogResultdesc !=null">loginlog_resultdesc=#{loginlogResultdesc}</if>
+		</set>
+		where loginlog_Id=#{loginlogId}
+</update> 
+
+  <resultMap id="baseResultLoginlog" type="com.web.entity.Loginlog" >  
+    <id column="loginlog_id" property="loginlogId" jdbcType="INTEGER" />
+    <result column="loginlog_admin" property="loginlogAdmin.adminId" jdbcType="INTEGER" />
+    <result column="loginlog_IP" property="loginlogIp" jdbcType="VARCHAR" />
+    <result column="loginlog_address" property="loginlogAddress" jdbcType="VARCHAR" />
+    <result column="loginlog_date" property="loginlogDate" jdbcType="DATE" />
+    <result column="loginlog_result" property="loginlogResult" jdbcType="VARCHAR" />
+    <result column="loginlog_resultdesc" property="loginlogResultdesc" jdbcType="VARCHAR" />
+  </resultMap>
+</mapper>

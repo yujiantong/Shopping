@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.GoodstypeMapper" >
+  <resultMap id="baseResultGoodsType" type="com.web.entity.Goodstype" >
+    <id column="type_Id" property="typeId" jdbcType="INTEGER" />
+    <result column="type_Name" property="typeName" jdbcType="VARCHAR" />
+    
+    <result column="type_Pid" property="typePid.typeId" jdbcType="INTEGER" />
+    
+    <result column="type_Level" property="typeLevel" jdbcType="INTEGER" />
+    <result column="type_Path" property="typePath" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <select id="findByTypePid" resultMap="baseResultGoodsType">
+  	SELECT * FROM goodstype WHERE type_Pid=#{0}
+  </select>
+  
+  <update id="update" parameterType="com.web.entity.Goodstype">
+      update Goodstype 
+			<set>
+				<if test="typeName != null">type_Name = #{typeName},</if>
+				<if test="typePid.typeId != null">type_Pid = #{typePid.typeId},</if>
+				<if test="typeLevel!= null">type_Level = #{typeLevel},</if>
+				<if test="typePath!= null">type_Path = #{typePath},</if>
+			</set>
+		where type_Id=#{typeId}
+  </update>
+  <!-- 添加商品类型 -->
+  <insert id="insert" parameterType="com.web.entity.Goodstype" useGeneratedKeys="true" keyProperty="typeId">
+      insert into GoodsType(type_Name,type_Pid,type_Level,type_Path) 
+      values(#{typeName},#{typePid.typeId},#{typeLevel},#{typePath})
+  </insert>
+
+
+ <!-- 查找商品Id -->
+  <select id="findById" resultMap="baseResultGoodsType">
+	   select * from goodstype where type_Id=#{0}
+	</select>
+  
+  <!-- 监听器类型需要 -->
+  <select id="findAll" resultMap="baseResultGoodsType">
+  	SELECT * FROM goodstype
+  </select>
+  <!-- 母婴专区类型-->
+  <select id="findAllMuying" resultMap="baseResultGoodsType">
+  	SELECT * FROM goodstype where type_Pid=1
+  </select>
+  <!-- 美妆护肤类型-->
+  <select id="findAllMeizhuang" resultMap="baseResultGoodsType">
+  	SELECT * FROM goodstype where type_Pid=14
+  </select>
+  <!-- 家居生活类型-->
+  <select id="findAllJiaju" resultMap="baseResultGoodsType">
+  	SELECT * FROM goodstype where type_Pid=27
+  </select>
+  <!-- 食品营养类型-->
+  <select id="findAllYinyang" resultMap="baseResultGoodsType">
+  	SELECT * FROM goodstype where type_Pid=40
+  </select>
+  <!-- 所有一级类型 -->
+  <select id="finAllParent" resultMap="baseResultGoodsType" parameterType="java.lang.Integer">
+  	select * from goodstype where type_Level=1
+  </select>
+</mapper>

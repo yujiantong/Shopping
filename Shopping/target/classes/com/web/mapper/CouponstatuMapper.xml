@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.CouponstatuMapper" >
+
+  <sql id="Base_Column_List" >
+    couponstate_Id, couponstate_Name
+  </sql>
+
+  <resultMap id="BaseResultCouponstatu" type="com.web.entity.Couponstatu" >
+    <id column="couponstate_Id" property="couponstateId" jdbcType="INTEGER" />
+    <result column="couponstate_Name" property="couponstateName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from couponstatu
+    where couponstate_Id = #{couponstateId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from couponstatu
+    where couponstate_Id = #{couponstateId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.web.entity.Couponstatu" >
+    insert into couponstatu (couponstate_Id, couponstate_Name)
+    values (#{couponstateId,jdbcType=INTEGER}, #{couponstateName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.web.entity.Couponstatu" >
+    insert into couponstatu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="couponstateId != null" >
+        couponstate_Id,
+      </if>
+      <if test="couponstateName != null" >
+        couponstate_Name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="couponstateId != null" >
+        #{couponstateId,jdbcType=INTEGER},
+      </if>
+      <if test="couponstateName != null" >
+        #{couponstateName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.web.entity.Couponstatu" >
+    update couponstatu
+    <set >
+      <if test="couponstateName != null" >
+        couponstate_Name = #{couponstateName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where couponstate_Id = #{couponstateId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.web.entity.Couponstatu" >
+    update couponstatu
+    set couponstate_Name = #{couponstateName,jdbcType=VARCHAR}
+    where couponstate_Id = #{couponstateId,jdbcType=INTEGER}
+  </update> -->
+</mapper>

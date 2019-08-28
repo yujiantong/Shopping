@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.ExpressMapper">
+	<resultMap type="com.web.entity.Express" id="baseResultExpress">
+		<id column="express_id" property="expressId" javaType="java.lang.Integer"/>
+		<result column="express_name" property="expressName" javaType="java.lang.String"/>
+	</resultMap>
+	
+	<select id="findAllExpress" resultMap="baseResultExpress">
+		select * from express 
+	</select>
+	<select id="findById" resultMap="baseResultExpress">
+		select * from express where express_id=#{expressId}
+	</select>
+</mapper>

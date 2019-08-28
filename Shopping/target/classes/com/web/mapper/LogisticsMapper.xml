@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.LogisticsMapper" >
+
+  <resultMap id="BaseResultLogistics" type="com.web.entity.Logistics" >
+    <id column="logistics_id" property="logisticsId" jdbcType="INTEGER" />
+    <result column="logistics_order" property="logisticsOrder.orderId" jdbcType="VARCHAR" />
+    <result column="logistics_statu" property="logisticsStatu.statuId" jdbcType="INTEGER" />
+    <result column="logistics_msg" property="logisticsMsg" jdbcType="VARCHAR" />
+     <result column="logistics_express" property="logisticsExpress.expressId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="baseColumnLogistics" >
+    logistics_id, logistics_order, logistics_statu, logistics_msg,logistics_express
+  </sql>
+  <select id="findByOrderId" parameterType="string" resultMap="BaseResultLogistics">
+  	SELECT * FROM logistics WHERE logistics_order=#{orderId}
+  </select>
+  <select id="findByVO" resultMap="BaseResultLogistics" parameterType="com.web.vo.SearchOrderVO">
+  	SELECT * from  orders LEFT JOIN logistics on logistics_order=order_id
+    <where>
+    	<if test="statuId!=null">logistics_statu=#{statuId} </if> 
+	    <if test="year!=null">and year(order_date)=#{year}</if> 
+	    <if test="month!=null">and month(order_date)=#{month}</if> 
+	    <if test="dayOfYear!=null">and dayofyear(order_date)=#{dayOfYear}</if> 
+	    <if test="orderId!=null">and order_id=#{orderId}</if> 
+    </where>
+    
+  </select>
+  <select id="findAllLogistics" resultMap="BaseResultLogistics">
+    select <include refid="baseColumnLogistics"/> from logistics
+  </select>
+  <delete id="delLogistics" parameterType="java.lang.Integer">
+  	delete from logistics where logistics_id=#{id}
+  </delete>
+  
+  <update id="updateLogistics" parameterType="com.web.entity.Logistics">
+  	update logistics
+  	<set>
+  		<if test="logisticsOrder!=null and logisticsOrder.orderId!=null">logistics_order=#{logisticsOrder.orderId},</if>
+  		<if test="logisticsStatu!=null and logisticsStatu.statuId!=null">logistics_statu=#{logisticsStatu.statuId},</if>
+  		<if test="logisticsExpress!=null and logisticsExpress.expressId!=null">logistics_express=#{logisticsExpress.expressId},</if>
+  		<if test="logisticsMsg!=null">logistics_msg=#{logisticsMsg}</if>
+  	</set>
+  	where
+  	logistics_id=#{logisticsId}
+  </update>
+  
+  <insert id="saveLogistics" parameterType="com.web.entity.Logistics">
+  	insert into logistics(logistics_order,logistics_statu,logistics_msg,logistics_express)
+  	values
+  	(#{logisticsOrder.orderId},#{logisticsStatu.statuId},#{logisticsMsg},#{logisticsExpress.expressId})
+  </insert>
+
+  <select id="findByIdOrDate" resultMap="BaseResultLogistics" >
+	select * from logistics left join orders on logistics_order=order_id
+	 where 1=1
+	<if test="orderId!=null">and logistics_order=#{orderId}</if>
+	<if test="orderDate!=null"> and order_date=#{orderDate}</if>
+</select>
+  
+  
+  
+  
+  
+  
+  
+</mapper>

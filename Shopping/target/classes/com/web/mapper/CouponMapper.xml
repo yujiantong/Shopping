@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.CouponMapper" >
+
+  <sql id="Base_Column_List" >
+    coupon_Id, coupon_User, coupon_Reduce, coupon_Avail, coupon_Begin, coupon_End, coupon_Range, 
+    coupon_State
+  </sql>
+  <resultMap id="BaseResultCoupon" type="com.web.entity.Coupon" >
+    <id column="coupon_Id" property="couponId" jdbcType="INTEGER" />
+    <result column="coupon_User" property="couponUser.userId" jdbcType="INTEGER" />
+    <result column="coupon_Reduce" property="couponReduce" jdbcType="INTEGER" />
+    <result column="coupon_Avail" property="couponAvail" jdbcType="INTEGER" />
+    <result column="coupon_Begin" property="couponBegin" jdbcType="DATE" />
+    <result column="coupon_End" property="couponEnd" jdbcType="DATE" />
+    <result column="coupon_Range" property="couponRange" jdbcType="VARCHAR" />
+    <result column="coupon_State" property="couponState.couponstateId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <select id="findUseCoupon" resultMap="BaseResultCoupon">
+  	select <include refid="Base_Column_List"/> from coupon where coupon_End &gt; #{date} and coupon_User = #{userId} and  coupon_State = 1
+  </select>
+  <update id="updateCouponState" parameterType="com.web.entity.Coupon">
+    update  coupon set coupon_State=#{couponState.couponstateId} where  coupon_Id=#{couponId}
+  </update>
+  
+  <select id="findById" parameterType="int" resultMap="BaseResultCoupon">
+  		select <include refid="Base_Column_List"/> from coupon WHERE coupon_Id=#{couponId}
+  </select>
+  <select id="findUseedCoupon" resultMap="BaseResultCoupon">
+  	select <include refid="Base_Column_List"/> from coupon where coupon_User = #{userId} and coupon_State = 2
+  </select>
+  
+  <select id="findNotUseCoupon" parameterType="java.util.Date" resultMap="BaseResultCoupon">
+  	select <include refid="Base_Column_List"/> from coupon where coupon_End &lt; #{date} and coupon_User = #{userId} and coupon_State = 1
+  </select>
+  
+  <insert id="saveCoupon" parameterType="com.web.entity.Coupon" useGeneratedKeys="true" keyProperty="coupon_Id">
+  	insert into coupon (coupon_User, coupon_Reduce, 
+      coupon_Avail, coupon_Begin, coupon_End, 
+      coupon_Range, coupon_State)
+    values (#{couponUser.userId}, #{couponReduce}, 
+      #{couponAvail}, #{couponBegin}, #{couponEnd}, 
+      #{couponRange}, #{couponState.couponstateId})
+  </insert>
+
+  <!-- <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from coupon
+    where coupon_Id = #{couponId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from coupon
+    where coupon_Id = #{couponId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.web.entity.Coupon" >
+    insert into coupon (coupon_Id, coupon_User, coupon_Reduce, 
+      coupon_Avail, coupon_Begin, coupon_End, 
+      coupon_Range, coupon_State)
+    values (#{couponId,jdbcType=INTEGER}, #{couponUser,jdbcType=INTEGER}, #{couponReduce,jdbcType=INTEGER}, 
+      #{couponAvail,jdbcType=INTEGER}, #{couponBegin,jdbcType=DATE}, #{couponEnd,jdbcType=DATE}, 
+      #{couponRange,jdbcType=VARCHAR}, #{couponState,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.web.entity.Coupon" >
+    insert into coupon
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="couponId != null" >
+        coupon_Id,
+      </if>
+      <if test="couponUser != null" >
+        coupon_User,
+      </if>
+      <if test="couponReduce != null" >
+        coupon_Reduce,
+      </if>
+      <if test="couponAvail != null" >
+        coupon_Avail,
+      </if>
+      <if test="couponBegin != null" >
+        coupon_Begin,
+      </if>
+      <if test="couponEnd != null" >
+        coupon_End,
+      </if>
+      <if test="couponRange != null" >
+        coupon_Range,
+      </if>
+      <if test="couponState != null" >
+        coupon_State,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="couponId != null" >
+        #{couponId,jdbcType=INTEGER},
+      </if>
+      <if test="couponUser != null" >
+        #{couponUser,jdbcType=INTEGER},
+      </if>
+      <if test="couponReduce != null" >
+        #{couponReduce,jdbcType=INTEGER},
+      </if>
+      <if test="couponAvail != null" >
+        #{couponAvail,jdbcType=INTEGER},
+      </if>
+      <if test="couponBegin != null" >
+        #{couponBegin,jdbcType=DATE},
+      </if>
+      <if test="couponEnd != null" >
+        #{couponEnd,jdbcType=DATE},
+      </if>
+      <if test="couponRange != null" >
+        #{couponRange,jdbcType=VARCHAR},
+      </if>
+      <if test="couponState != null" >
+        #{couponState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.web.entity.Coupon" >
+    update coupon
+    <set >
+      <if test="couponUser != null" >
+        coupon_User = #{couponUser,jdbcType=INTEGER},
+      </if>
+      <if test="couponReduce != null" >
+        coupon_Reduce = #{couponReduce,jdbcType=INTEGER},
+      </if>
+      <if test="couponAvail != null" >
+        coupon_Avail = #{couponAvail,jdbcType=INTEGER},
+      </if>
+      <if test="couponBegin != null" >
+        coupon_Begin = #{couponBegin,jdbcType=DATE},
+      </if>
+      <if test="couponEnd != null" >
+        coupon_End = #{couponEnd,jdbcType=DATE},
+      </if>
+      <if test="couponRange != null" >
+        coupon_Range = #{couponRange,jdbcType=VARCHAR},
+      </if>
+      <if test="couponState != null" >
+        coupon_State = #{couponState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where coupon_Id = #{couponId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.web.entity.Coupon" >
+    update coupon
+    set coupon_User = #{couponUser,jdbcType=INTEGER},
+      coupon_Reduce = #{couponReduce,jdbcType=INTEGER},
+      coupon_Avail = #{couponAvail,jdbcType=INTEGER},
+      coupon_Begin = #{couponBegin,jdbcType=DATE},
+      coupon_End = #{couponEnd,jdbcType=DATE},
+      coupon_Range = #{couponRange,jdbcType=VARCHAR},
+      coupon_State = #{couponState,jdbcType=INTEGER}
+    where coupon_Id = #{couponId,jdbcType=INTEGER}
+  </update> -->
+</mapper>

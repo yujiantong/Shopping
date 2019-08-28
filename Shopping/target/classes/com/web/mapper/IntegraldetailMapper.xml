@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.IntegraldetailMapper" >
+
+  <sql id="Base_Column_List" >
+    integraldetail_Id, integraldetail_Order, integraldetail_Date, integraldetail_IntegralNum,integraldetail_User
+  </sql>
+
+  <resultMap id="BaseResultIntegraldetail" type="com.web.entity.Integraldetail" >
+    <id column="integraldetail_Id" property="integraldetailId" jdbcType="INTEGER" />
+    <result column="integraldetail_Order" property="integraldetailOrder.orderId" jdbcType="VARCHAR" />
+    <result column="integraldetail_Date" property="integraldetailDate" jdbcType="DATE" />
+    <result column="integraldetail_IntegralNum" property="integraldetailIntegralnum" jdbcType="INTEGER" />
+    <result column="integraldetail_User" property="integraldetailUser.userId" javaType="java.lang.Integer"/>
+  </resultMap>
+  
+  <select id="findByDate" resultMap="BaseResultIntegraldetail">
+  	select <include refid="Base_Column_List"/> 
+  	from integraldetail 
+  	where integraldetail_Date = #{date} and integraldetail_User = #{userId} and integraldetail_IntegralNum = 5
+  </select>
+  
+  <select id="findFiveIntegraldetail" parameterType="java.lang.Integer" resultMap="BaseResultIntegraldetail">
+  	select <include refid="Base_Column_List"/> from integraldetail 
+  	where integraldetail_User = #{0} order by integraldetail_Date DESC 
+  </select>
+  <select id="findIncome" parameterType="java.lang.Integer" resultMap="BaseResultIntegraldetail">
+  	select <include refid="Base_Column_List"/> from integraldetail 
+  	where integraldetail_User = #{0} and integraldetail_IntegralNum &gt; 0 order by integraldetail_Date DESC
+  </select>
+  <select id="findExpend" parameterType="java.lang.Integer" resultMap="BaseResultIntegraldetail">
+  	select <include refid="Base_Column_List"/> from integraldetail 
+  	where integraldetail_User = #{0} and integraldetail_IntegralNum &lt; 0 order by integraldetail_Date DESC 
+  </select>
+  
+  <insert id="saveIntegraldetail" parameterType="com.web.entity.Integraldetail">
+  	insert into integraldetail (integraldetail_Id, integraldetail_Order, 
+      integraldetail_Date, integraldetail_IntegralNum,integraldetail_User
+      )
+    values (#{integraldetailId}, #{integraldetailOrder.orderId}, 
+      #{integraldetailDate}, #{integraldetailIntegralnum},#{integraldetailUser.userId}
+      )
+  </insert>
+  
+  <!--
+  <set>
+  			<if test="integraldetailId != null">integraldetail_Id = #{integraldetailId},</if>
+  			<if test="integraldetailOrder != null and integraldetailOrder.orderId != null">integraldetail_Order = #{integraldetailOrder.orderId},</if>
+  			<if test="integraldetailDate != null">integraldetail_Date = #{integraldetailDate},</if>
+  			<if test="integraldetailIntegralnum != null">integraldetail_IntegralNum = #{integraldetailIntegralnum}</if>
+  		</set> 
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from integraldetail
+    where integraldetail_Id = #{integraldetailId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from integraldetail
+    where integraldetail_Id = #{integraldetailId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.web.entity.Integraldetail" >
+    insert into integraldetail (integraldetail_Id, integraldetail_Order, 
+      integraldetail_Date, integraldetail_IntegralNum
+      )
+    values (#{integraldetailId,jdbcType=INTEGER}, #{integraldetailOrder,jdbcType=VARCHAR}, 
+      #{integraldetailDate,jdbcType=DATE}, #{integraldetailIntegralnum,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.web.entity.Integraldetail" >
+    insert into integraldetail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="integraldetailId != null" >
+        integraldetail_Id,
+      </if>
+      <if test="integraldetailOrder != null" >
+        integraldetail_Order,
+      </if>
+      <if test="integraldetailDate != null" >
+        integraldetail_Date,
+      </if>
+      <if test="integraldetailIntegralnum != null" >
+        integraldetail_IntegralNum,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="integraldetailId != null" >
+        #{integraldetailId,jdbcType=INTEGER},
+      </if>
+      <if test="integraldetailOrder != null" >
+        #{integraldetailOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="integraldetailDate != null" >
+        #{integraldetailDate,jdbcType=DATE},
+      </if>
+      <if test="integraldetailIntegralnum != null" >
+        #{integraldetailIntegralnum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.web.entity.Integraldetail" >
+    update integraldetail
+    <set >
+      <if test="integraldetailOrder != null" >
+        integraldetail_Order = #{integraldetailOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="integraldetailDate != null" >
+        integraldetail_Date = #{integraldetailDate,jdbcType=DATE},
+      </if>
+      <if test="integraldetailIntegralnum != null" >
+        integraldetail_IntegralNum = #{integraldetailIntegralnum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where integraldetail_Id = #{integraldetailId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.web.entity.Integraldetail" >
+    update integraldetail
+    set integraldetail_Order = #{integraldetailOrder,jdbcType=VARCHAR},
+      integraldetail_Date = #{integraldetailDate,jdbcType=DATE},
+      integraldetail_IntegralNum = #{integraldetailIntegralnum,jdbcType=INTEGER}
+    where integraldetail_Id = #{integraldetailId,jdbcType=INTEGER}
+  </update> -->
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.DiscussMapper">
+
+	<sql id="discussColumn">
+		discuss_id, discuss_user, discuss_comment, discuss_good, discuss_img,
+		discuss_date
+	</sql>
+	
+	<select id="findByGoodsIdJoinUsers" parameterType="java.lang.Integer" resultMap="resultDiscussJoinUsers">
+		select * from discuss as d 
+		left join users as u 
+		on d.discuss_user = u.user_Id 
+		where discuss_good = #{goodsId}
+	</select>
+	
+	<select id="findByGoodsIdAndStyleIdJoinUsers" resultMap="resultDiscussJoinUsers">
+		select * from discuss as d 
+		left join users as u 
+		on d.discuss_user = u.user_Id 
+		where discuss_good = #{goodsId}
+		and discuss_style = #{styleId}
+	</select>
+	
+	<resultMap type="com.web.entity.Discuss" id="resultDiscussJoinUsers" extends="BaseResultDiscuss">
+		<association property="discussUser"
+		resultMap="com.web.mapper.UsersMapper.BaseResultUsers"
+		/>
+	</resultMap>
+	
+	<select id="countDiscussByStyle" parameterType="java.lang.Integer" resultType="java.util.Map">
+		select count(discuss_id) as num,discussstyle_Name as name,discussstyle_Id as id 
+		from discuss as d 
+		left join 
+		discussstyle as s 
+		on d.discuss_style = s.discussstyle_Id 
+		where discuss_good=#{0}
+		group by discuss_style
+	</select>
+	
+	<insert id="saveDiscuss" parameterType="com.web.entity.Discuss" useGeneratedKeys="true" keyProperty="discussId">
+		insert into discuss (discuss_user, discuss_comment, discuss_good, 
+		discuss_img, discuss_date,discuss_style,discuss_service,discuss_logistics,discuss_quality)
+		values
+		(#{discussUser.userId}, #{discussComment}, #{discussGood.goodsId}, 
+		#{discussImg}, #{discussDate},#{discussStyle.discussstyleId},#{discussService},#{discussLogistics},#{discussQuality})
+	</insert>
+	
+	<delete id="deleteDiscussByDiscussId" parameterType="java.lang.Integer">
+		delete from discuss where discuss_Id = #{discussId}
+	</delete>
+	
+	<update id="updateDiscuss" parameterType="com.web.entity.Discuss">
+		update discuss
+			<set>
+				<if test="discussUser != null and discussUser.userId">discuss_User = #{discussUser.userId},</if>
+				<if test="discussComment != null">discuss_Comment = #{discussComment},</if>
+				<if test="discussGood != null and discussGood.goodsId">discuss_Good = #{discussGood.goodsId},</if>
+				<if test="discussImg != null">discuss_Img = #{discussImg},</if>
+				<if test="discussDate != null">discuss_Date = #{discussDate}</if>
+			</set>
+		where discuss_Id = #{discussId}
+	</update>
+	
+	<select id="findAllDiscuss" resultMap="BaseResultDiscuss">
+		select <include refid="discussColumn"/> from discuss
+	</select>
+
+	<resultMap id="BaseResultDiscuss" type="com.web.entity.Discuss">
+		<id column="discuss_id" property="discussId" jdbcType="INTEGER" />
+		<result column="discuss_user" property="discussUser.userId" jdbcType="INTEGER" />
+		<result column="discuss_comment" property="discussComment"
+			jdbcType="VARCHAR" />
+		<result column="discuss_good" property="discussGood.goodsId" jdbcType="INTEGER" />
+		<result column="discuss_img" property="discussImg" jdbcType="VARCHAR" />
+		<result column="discuss_date" property="discussDate" jdbcType="DATE" />
+		<result column="discuss_style" property="discussStyle.discussstyleId" javaType="java.lang.Integer" />
+	</resultMap>
+
+</mapper>

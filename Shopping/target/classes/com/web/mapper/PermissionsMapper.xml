@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.web.mapper.PermissionsMapper" >
+  <resultMap id="BaseResultPermissions" type="com.web.entity.Permissions" >
+    <result column="permission_role" property="permissionRole.roleId" jdbcType="INTEGER" />
+    <result column="permission_fun" property="permissionFun.funId" jdbcType="INTEGER" />
+  </resultMap>
+ 
+  <select id="findByRole" resultMap="BaseResultPermissions">
+  	select permission_fun,permission_role from permissions 
+  	where
+  	permission_role=#{roleId} order by permission_fun 
+  </select>
+</mapper>
