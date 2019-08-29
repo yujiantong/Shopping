@@ -7,13 +7,9 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.web.entity.Goodstype;
-import com.web.entity.Status;
-import com.web.service.GoodsService;
 import com.web.service.GoodstypeService;
 
 @WebListener

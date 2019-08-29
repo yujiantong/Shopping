@@ -5,11 +5,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 <configuration>
 
 	<!-- 别名定义 -->
-	<typeAliases>
-		<!-- 批量别名定义 指定包名，mybatis自动扫描包中的po类，自动定义别名，别名就是类名（首字母大写或小写都可以） -->
-		<package name="com.bofu.bkp.po" />
-	</typeAliases>
-
     <plugins>  
         <!-- com.github.pagehelper为PageHelper类所在包名 -->  
         <plugin interceptor="com.github.pagehelper.PageHelper">  

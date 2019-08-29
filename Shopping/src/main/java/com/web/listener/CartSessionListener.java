@@ -1,9 +1,7 @@
 package com.web.listener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
@@ -11,7 +9,6 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import com.web.entity.Cart;
-import com.web.entity.Users;
 
 /**
  * Application Lifecycle Listener implementation class CartSessionListener
